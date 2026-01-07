@@ -1,23 +1,23 @@
+import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
+import React from "react";
 import {
-  View,
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
   Text,
   TextInput,
-  Pressable,
-  StyleSheet,
-  Alert,
-  ScrollView,
+  View,
 } from "react-native";
-import { router } from "expo-router";
-import { LinearGradient } from "expo-linear-gradient";
 import { useUsernames } from "../hooks/useUsernames";
-import { moderateScale, verticalScale } from "../utils/responsive";
-import React from "react";
+import { verticalScale } from "../utils/responsive";
 
 import { signOut } from "firebase/auth";
 import { auth } from "../utils/firebase";
 
 /* ================= APP VERSION (YOU CONTROL THIS) ================= */
-const APP_VERSION = "1.0.0"; // Update manually when you release new features
+const APP_VERSION = "1.2.6"; 
 
 export default function Settings() {
   const { github, leetcode, setGithub, setLeetcode, save, loaded } =
