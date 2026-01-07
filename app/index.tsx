@@ -178,6 +178,7 @@ export default function Home() {
 
               {!leetcodeData.loading && (
                 <>
+                  {/* Row 1 */}
                   <View style={styles.statsRow}>
                     <StatChip
                       icon="🟢"
@@ -189,14 +190,15 @@ export default function Home() {
                       label="Medium"
                       value={leetcodeData.solved.medium}
                     />
+                  </View>
+
+                  {/* Row 2 */}
+                  <View style={styles.statsRow}>
                     <StatChip
                       icon="🔴"
                       label="Hard"
                       value={leetcodeData.solved.hard}
                     />
-                  </View>
-
-                  <View style={styles.statsRow}>
                     <StatChip
                       icon="📊"
                       label="Total"
@@ -251,7 +253,7 @@ const styles = StyleSheet.create({
   loadingText: { color: "#9ca3af", fontSize: 16 },
 
   content: {
-    paddingHorizontal: moderateScale(22), // more breathing room
+    paddingHorizontal: moderateScale(22),
     paddingTop: verticalScale(46),
     paddingBottom: verticalScale(60),
   },
@@ -306,7 +308,7 @@ const styles = StyleSheet.create({
 
   card: {
     flex: 1,
-    backgroundColor: "rgba(255,255,255,0.035)", // softer
+    backgroundColor: "rgba(255,255,255,0.035)",
     borderRadius: moderateScale(22),
     padding: moderateScale(14),
     borderWidth: 1,
@@ -317,14 +319,14 @@ const styles = StyleSheet.create({
   statsRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 12, // more space between chips
+    gap: 12,
     marginTop: 10,
     marginBottom: 6,
   },
 
   statChip: {
     flexGrow: 1,
-    minWidth: 92,
+    minWidth: 110, // wider for clean grid
     backgroundColor: "rgba(255,255,255,0.035)",
     borderRadius: 14,
     paddingVertical: 8,
