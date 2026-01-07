@@ -38,27 +38,18 @@ const ToolbarButton = ({
 
 /* ===== Stat Chip ===== */
 
-type ChipVariant =
-  | "default"
-  | "easy"
-  | "medium"
-  | "hard"
-  | "total"
-  | "longest"
-  | "commits";
-
 const StatChip = ({
   icon,
   label,
   value,
-  variant = "default",
+  highlight = false,
 }: {
   icon: string;
   label: string;
   value: string | number;
-  variant?: ChipVariant;
+  highlight?: boolean;
 }) => (
-  <View style={[styles.statChip, styles[`chip_${variant}`]]}>
+  <View style={[styles.statChip, highlight && styles.statChipHighlight]}>
     <Text style={styles.statIcon}>{icon}</Text>
     <Text style={styles.statValue}>{value}</Text>
     <Text style={styles.statLabel}>{label}</Text>
@@ -111,18 +102,21 @@ export default function Home() {
                 color="#93c5fd"
                 onPress={() => router.push("/profile-share")}
               />
+
               <ToolbarButton
                 icon="📊"
                 label="Stats"
                 color="#facc15"
                 onPress={() => router.push("/stats")}
               />
+
               <ToolbarButton
                 icon="⚙️"
                 label="Settings"
                 color="#22c55e"
                 onPress={() => router.push("/settings")}
               />
+
               <ToolbarButton
                 icon="📂"
                 label="Repos"
@@ -150,13 +144,11 @@ export default function Home() {
                     icon="🏆"
                     label="Longest"
                     value={`${githubData.longestStreak}d`}
-                    variant="longest"
                   />
                   <StatChip
                     icon="📦"
                     label="Commits"
                     value={githubData.totalCommits}
-                    variant="commits"
                   />
                 </View>
               )}
@@ -188,33 +180,32 @@ export default function Home() {
 
               {!leetcodeData.loading && (
                 <>
+                  {/* Row 1 */}
                   <View style={styles.statsRow}>
                     <StatChip
                       icon="🟢"
                       label="Easy"
                       value={leetcodeData.solved.easy}
-                      variant="easy"
                     />
                     <StatChip
                       icon="🟡"
                       label="Medium"
                       value={leetcodeData.solved.medium}
-                      variant="medium"
                     />
                   </View>
 
+                  {/* Row 2 */}
                   <View style={styles.statsRow}>
                     <StatChip
                       icon="🔴"
                       label="Hard"
                       value={leetcodeData.solved.hard}
-                      variant="hard"
                     />
                     <StatChip
                       icon="📊"
                       label="Total"
                       value={leetcodeData.solved.total}
-                      variant="total"
+                      highlight
                     />
                   </View>
                 </>
@@ -339,42 +330,17 @@ const styles = StyleSheet.create({
   statChip: {
     flexGrow: 1,
     minWidth: 110,
+    backgroundColor: "rgba(255,255,255,0.035)",
     borderRadius: 14,
     paddingVertical: 8,
     alignItems: "center",
     borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.05)",
   },
 
-  /* ===== COLOR VARIANTS ===== */
-
-  chip_easy: {
-    backgroundColor: "rgba(34,197,94,0.12)",
-    borderColor: "rgba(34,197,94,0.35)",
-  },
-
-  chip_medium: {
-    backgroundColor: "rgba(234,179,8,0.12)",
-    borderColor: "rgba(234,179,8,0.35)",
-  },
-
-  chip_hard: {
-    backgroundColor: "rgba(239,68,68,0.12)",
-    borderColor: "rgba(239,68,68,0.35)",
-  },
-
-  chip_total: {
-    backgroundColor: "rgba(99,102,241,0.14)", // indigo
-    borderColor: "rgba(99,102,241,0.45)",
-  },
-
-  chip_longest: {
-    backgroundColor: "rgba(245,158,11,0.14)", // amber
-    borderColor: "rgba(245,158,11,0.45)",
-  },
-
-  chip_commits: {
-    backgroundColor: "rgba(56,189,248,0.14)", // cyan
-    borderColor: "rgba(56,189,248,0.45)",
+  statChipHighlight: {
+    backgroundColor: "rgba(250,204,21,0.18)", // soft yellow
+    borderColor: "rgba(250,204,21,0.5)",
   },
 
   statIcon: {
