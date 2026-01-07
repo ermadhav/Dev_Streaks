@@ -17,8 +17,6 @@ import { useLeetCodeStreak } from "../hooks/useLeetCodeStreak";
 import { useUsernames } from "../hooks/useUsernames";
 import { moderateScale, verticalScale } from "../utils/responsive";
 
-import { auth } from "../utils/firebase";
-
 /* ===== Toolbar Button ===== */
 
 const ToolbarButton = ({
@@ -36,6 +34,24 @@ const ToolbarButton = ({
     <Text style={[styles.toolbarIcon, { color }]}>{icon}</Text>
     <Text style={styles.toolbarLabel}>{label}</Text>
   </Pressable>
+);
+
+/* ===== Stat Chip ===== */
+
+const StatChip = ({
+  icon,
+  label,
+  value,
+}: {
+  icon: string;
+  label: string;
+  value: string | number;
+}) => (
+  <View style={styles.statChip}>
+    <Text style={styles.statIcon}>{icon}</Text>
+    <Text style={styles.statValue}>{value}</Text>
+    <Text style={styles.statLabel}>{label}</Text>
+  </View>
 );
 
 /* ===== Home ===== */
@@ -112,7 +128,7 @@ export default function Home() {
           <View
             style={[styles.cardsWrapper, isWide && styles.cardsWrapperWide]}
           >
-            {/* GitHub */}
+            {/* ================= GITHUB ================= */}
             <View style={styles.card}>
               <StreakCard
                 title={`GitHub · ${github || "N/A"}`}
@@ -121,14 +137,31 @@ export default function Home() {
               />
 
               {!githubData.loading && (
-                <View style={styles.metaRow}>
-                  <Text style={styles.metaText}>
-                    🏆 Longest: {githubData.longestStreak} days
-                  </Text>
-                  <Text style={styles.metaText}>
-                    📦 Commits: {githubData.totalCommits}
-                  </Text>
-                </View>
+                <>
+                  {/* Streak Highlight */}
+                  <View style={styles.streakHighlight}>
+                    <Text style={styles.streakNumber}>
+                      🔥 {githubData.currentStreak}
+                    </Text>
+                    <Text style={styles.streakLabel}>
+                      Current Streak (days)
+                    </Text>
+                  </View>
+
+                  {/* Stats */}
+                  <View style={styles.statsRow}>
+                    <StatChip
+                      icon="🏆"
+                      label="Longest"
+                      value={`${githubData.longestStreak}d`}
+                    />
+                    <StatChip
+                      icon="📦"
+                      label="Commits"
+                      value={githubData.totalCommits}
+                    />
+                  </View>
+                </>
               )}
 
               {!githubData.loading && (
@@ -148,7 +181,7 @@ export default function Home() {
               )}
             </View>
 
-            {/* LeetCode */}
+            {/* ================= LEETCODE ================= */}
             <View style={styles.card}>
               <StreakCard
                 title={`LeetCode · ${leetcode || "N/A"}`}
@@ -157,21 +190,45 @@ export default function Home() {
               />
 
               {!leetcodeData.loading && (
-                <View style={styles.metaColumn}>
-                  <Text style={styles.metaText}>
-                    🏆 Longest: {leetcodeData.longestStreak} days
-                  </Text>
+                <>
+                  {/* Streak Highlight */}
+                  <View style={styles.streakHighlight}>
+                    <Text style={styles.streakNumber}>
+                      🔥 {leetcodeData.currentStreak}
+                    </Text>
+                    <Text style={styles.streakLabel}>
+                      Current Streak (days)
+                    </Text>
+                  </View>
 
-                  <Text style={styles.metaText}>
-                    🟢 Easy: {leetcodeData.solved.easy} · 🟡 Medium:{" "}
-                    {leetcodeData.solved.medium} · 🔴 Hard:{" "}
-                    {leetcodeData.solved.hard}
-                  </Text>
+                  {/* Difficulty Stats */}
+                  <View style={styles.statsRow}>
+                    <StatChip
+                      icon="🟢"
+                      label="Easy"
+                      value={leetcodeData.solved.easy}
+                    />
+                    <StatChip
+                      icon="🟡"
+                      label="Medium"
+                      value={leetcodeData.solved.medium}
+                    />
+                    <StatChip
+                      icon="🔴"
+                      label="Hard"
+                      value={leetcodeData.solved.hard}
+                    />
+                  </View>
 
-                  <Text style={styles.metaText}>
-                    🟰 Total Solved: {leetcodeData.solved.total}
-                  </Text>
-                </View>
+                  {/* Total */}
+                  <View style={styles.statsRow}>
+                    <StatChip
+                      icon="📊"
+                      label="Total Solved"
+                      value={leetcodeData.solved.total}
+                    />
+                  </View>
+                </>
               )}
 
               {!leetcodeData.loading && (
@@ -282,18 +339,59 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(22),
   },
 
-  metaRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  streakHighlight: {
+    alignItems: "center",
     marginTop: 10,
+    marginBottom: 12,
+    paddingVertical: 12,
+    borderRadius: 16,
+    backgroundColor: "rgba(255,255,255,0.06)",
   },
 
-  metaColumn: { marginTop: 10 },
+  streakNumber: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: "#fbbf24",
+  },
 
-  metaText: {
+  streakLabel: {
     fontSize: 12,
     color: "#9ca3af",
-    marginBottom: 6,
+    marginTop: 2,
+  },
+
+  statsRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
+    marginBottom: 10,
+  },
+
+  statChip: {
+    flexGrow: 1,
+    minWidth: 90,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderRadius: 14,
+    paddingVertical: 10,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.06)",
+  },
+
+  statIcon: {
+    fontSize: 16,
+  },
+
+  statValue: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#e5e7eb",
+    marginTop: 2,
+  },
+
+  statLabel: {
+    fontSize: 11,
+    color: "#9ca3af",
   },
 
   heatmapWrapper: {
