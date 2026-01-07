@@ -17,8 +17,6 @@ import { useLeetCodeStreak } from "../hooks/useLeetCodeStreak";
 import { useUsernames } from "../hooks/useUsernames";
 import { moderateScale, verticalScale } from "../utils/responsive";
 
-import { auth } from "../utils/firebase";
-
 /* ===== Toolbar Button ===== */
 
 const ToolbarButton = ({
@@ -36,6 +34,24 @@ const ToolbarButton = ({
     <Text style={[styles.toolbarIcon, { color }]}>{icon}</Text>
     <Text style={styles.toolbarLabel}>{label}</Text>
   </Pressable>
+);
+
+/* ===== Stat Chip ===== */
+
+const StatChip = ({
+  icon,
+  label,
+  value,
+}: {
+  icon: string;
+  label: string;
+  value: string | number;
+}) => (
+  <View style={styles.statChip}>
+    <Text style={styles.statIcon}>{icon}</Text>
+    <Text style={styles.statValue}>{value}</Text>
+    <Text style={styles.statLabel}>{label}</Text>
+  </View>
 );
 
 /* ===== Home ===== */
@@ -112,7 +128,7 @@ export default function Home() {
           <View
             style={[styles.cardsWrapper, isWide && styles.cardsWrapperWide]}
           >
-            {/* GitHub */}
+            {/* ================= GITHUB ================= */}
             <View style={styles.card}>
               <StreakCard
                 title={`GitHub · ${github || "N/A"}`}
@@ -121,13 +137,17 @@ export default function Home() {
               />
 
               {!githubData.loading && (
-                <View style={styles.metaRow}>
-                  <Text style={styles.metaText}>
-                    🏆 Longest: {githubData.longestStreak} days
-                  </Text>
-                  <Text style={styles.metaText}>
-                    📦 Commits: {githubData.totalCommits}
-                  </Text>
+                <View style={styles.statsRow}>
+                  <StatChip
+                    icon="🏆"
+                    label="Longest"
+                    value={`${githubData.longestStreak}d`}
+                  />
+                  <StatChip
+                    icon="📦"
+                    label="Commits"
+                    value={githubData.totalCommits}
+                  />
                 </View>
               )}
 
@@ -148,7 +168,7 @@ export default function Home() {
               )}
             </View>
 
-            {/* LeetCode */}
+            {/* ================= LEETCODE ================= */}
             <View style={styles.card}>
               <StreakCard
                 title={`LeetCode · ${leetcode || "N/A"}`}
@@ -157,21 +177,33 @@ export default function Home() {
               />
 
               {!leetcodeData.loading && (
-                <View style={styles.metaColumn}>
-                  <Text style={styles.metaText}>
-                    🏆 Longest: {leetcodeData.longestStreak} days
-                  </Text>
+                <>
+                  <View style={styles.statsRow}>
+                    <StatChip
+                      icon="🟢"
+                      label="Easy"
+                      value={leetcodeData.solved.easy}
+                    />
+                    <StatChip
+                      icon="🟡"
+                      label="Medium"
+                      value={leetcodeData.solved.medium}
+                    />
+                    <StatChip
+                      icon="🔴"
+                      label="Hard"
+                      value={leetcodeData.solved.hard}
+                    />
+                  </View>
 
-                  <Text style={styles.metaText}>
-                    🟢 Easy: {leetcodeData.solved.easy} · 🟡 Medium:{" "}
-                    {leetcodeData.solved.medium} · 🔴 Hard:{" "}
-                    {leetcodeData.solved.hard}
-                  </Text>
-
-                  <Text style={styles.metaText}>
-                    🟰 Total Solved: {leetcodeData.solved.total}
-                  </Text>
-                </View>
+                  <View style={styles.statsRow}>
+                    <StatChip
+                      icon="📊"
+                      label="Total"
+                      value={leetcodeData.solved.total}
+                    />
+                  </View>
+                </>
               )}
 
               {!leetcodeData.loading && (
@@ -219,97 +251,118 @@ const styles = StyleSheet.create({
   loadingText: { color: "#9ca3af", fontSize: 16 },
 
   content: {
-    paddingHorizontal: moderateScale(20),
-    paddingTop: verticalScale(50),
-    paddingBottom: verticalScale(80),
+    paddingHorizontal: moderateScale(22), // more breathing room
+    paddingTop: verticalScale(46),
+    paddingBottom: verticalScale(60),
   },
 
   tabletContent: {
     alignSelf: "center",
-    maxWidth: 900,
+    maxWidth: 920,
     width: "100%",
   },
 
-  header: { marginBottom: verticalScale(24) },
+  header: { marginBottom: verticalScale(18) },
 
   title: {
     fontSize: moderateScale(30),
     fontWeight: "800",
     color: "#e5e7eb",
-    marginBottom: 12,
+    marginBottom: 8,
   },
 
   toolbar: {
     flexDirection: "row",
     alignItems: "center",
-    paddingRight: 10,
+    paddingRight: 6,
   },
 
   toolbarBtn: {
-    marginRight: 12,
-    paddingVertical: moderateScale(8),
+    marginRight: 10,
+    paddingVertical: moderateScale(6),
     paddingHorizontal: moderateScale(12),
-    borderRadius: moderateScale(14),
+    borderRadius: moderateScale(12),
     backgroundColor: "rgba(255,255,255,0.05)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.08)",
     alignItems: "center",
-    minWidth: 70,
+    minWidth: 64,
   },
 
-  toolbarIcon: { fontSize: moderateScale(18) },
+  toolbarIcon: { fontSize: moderateScale(16) },
 
   toolbarLabel: {
-    marginTop: 4,
-    fontSize: 11,
+    marginTop: 2,
+    fontSize: 10,
     color: "#9ca3af",
   },
 
-  cardsWrapper: { marginBottom: verticalScale(10) },
+  cardsWrapper: { marginBottom: verticalScale(6) },
 
   cardsWrapperWide: {
     flexDirection: "row",
-    gap: 16,
+    gap: 14,
   },
 
   card: {
     flex: 1,
-    backgroundColor: "rgba(255,255,255,0.04)",
+    backgroundColor: "rgba(255,255,255,0.035)", // softer
     borderRadius: moderateScale(22),
-    padding: moderateScale(16),
+    padding: moderateScale(14),
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.06)",
-    marginBottom: verticalScale(22),
+    borderColor: "rgba(255,255,255,0.05)",
+    marginBottom: verticalScale(14),
   },
 
-  metaRow: {
+  statsRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    flexWrap: "wrap",
+    gap: 12, // more space between chips
     marginTop: 10,
-  },
-
-  metaColumn: { marginTop: 10 },
-
-  metaText: {
-    fontSize: 12,
-    color: "#9ca3af",
     marginBottom: 6,
   },
 
+  statChip: {
+    flexGrow: 1,
+    minWidth: 92,
+    backgroundColor: "rgba(255,255,255,0.035)",
+    borderRadius: 14,
+    paddingVertical: 8,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.05)",
+  },
+
+  statIcon: {
+    fontSize: 15,
+    marginBottom: 2,
+  },
+
+  statValue: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#e5e7eb",
+  },
+
+  statLabel: {
+    fontSize: 11,
+    color: "#9ca3af",
+  },
+
   heatmapWrapper: {
-    marginTop: verticalScale(14),
-    padding: moderateScale(12),
+    marginTop: verticalScale(10),
+    padding: moderateScale(10),
     borderRadius: moderateScale(14),
-    backgroundColor: "rgba(0,0,0,0.35)",
-    minHeight: 100,
+    backgroundColor: "rgba(0,0,0,0.32)",
+    minHeight: 78,
   },
 
   footer: {
-    marginTop: verticalScale(40),
+    marginTop: verticalScale(22),
     alignItems: "center",
     borderTopWidth: 1,
     borderTopColor: "rgba(255,255,255,0.08)",
-    paddingTop: verticalScale(14),
+    paddingTop: verticalScale(12),
   },
 
   footerText: {
