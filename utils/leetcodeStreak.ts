@@ -1,52 +1,57 @@
 // utils/leetcodeStreak.ts
 
+const DAY = 86400;
+
+/* ---------------- LONGEST STREAK ---------------- */
+
 export function getLeetCodeLongestStreak(
   calendar: Record<string, number>
 ) {
   const days = Object.keys(calendar)
-    .map(Number)
+    .map((ts) => Math.floor(Number(ts) / DAY))
     .sort((a, b) => a - b);
 
-  let longest = 0;
-  let current = 0;
-  let prevDay = -1;
+  if (days.length === 0) return 0;
 
-  for (const ts of days) {
-    const day = Math.floor(ts / 86400); // UTC day
+  let longest = 1;
+  let current = 1;
 
-    if (prevDay === -1 || day !== prevDay + 1) {
-      current = 1;
-    } else {
+  for (let i = 1; i < days.length; i++) {
+    if (days[i] === days[i - 1] + 1) {
       current++;
+    } else {
+      current = 1;
     }
-
     longest = Math.max(longest, current);
-    prevDay = day;
   }
 
   return longest;
 }
 
+/* ---------------- CURRENT STREAK ---------------- */
+
 export function getLeetCodeCurrentStreak(
   calendar: Record<string, number>
 ) {
-  const days = Object.keys(calendar)
-    .map(Number)
-    .sort((a, b) => b - a);
+  if (!calendar || Object.keys(calendar).length === 0) return 0;
+
+  // Convert timestamps → unique day numbers
+  const solvedDays = new Set<number>(
+    Object.keys(calendar).map((ts) =>
+      Math.floor(Number(ts) / DAY)
+    )
+  );
+
+  // Find the latest solved day
+  const latestDay = Math.max(...solvedDays);
 
   let streak = 0;
-  let prevDay = -1;
+  let cursor = latestDay;
 
-  for (const ts of days) {
-    const day = Math.floor(ts / 86400);
-
-    if (prevDay === -1 || day === prevDay - 1) {
-      streak++;
-    } else {
-      break;
-    }
-
-    prevDay = day;
+  // Walk backwards while days exist
+  while (solvedDays.has(cursor)) {
+    streak++;
+    cursor--;
   }
 
   return streak;
