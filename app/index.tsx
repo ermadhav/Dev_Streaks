@@ -89,13 +89,8 @@ export default function Home() {
         <View style={[styles.content, isTablet && styles.tabletContent]}>
           {/* ===== HEADER ===== */}
           <View style={styles.header}>
-            {/* ⭐ Badge Style Title */}
-            <View style={styles.titleRow}>
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>DEV</Text>
-              </View>
-              <Text style={styles.titleText}>Streaks</Text>
-            </View>
+            {/* ⭐ Upgraded App Title */}
+            <Text style={styles.appTitle}>Dev Streaks 🚀</Text>
 
             <ScrollView
               horizontal
@@ -273,33 +268,18 @@ const styles = StyleSheet.create({
 
   header: { marginBottom: verticalScale(18) },
 
-  /* ⭐ Title Styles */
-  titleRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-
-  badge: {
-    backgroundColor: "#2563eb",
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
-    marginRight: 8,
-  },
-
-  badgeText: {
-    color: "#fff",
-    fontWeight: "800",
-    letterSpacing: 1.2,
-    fontSize: 14,
-  },
-
-  titleText: {
-    fontSize: moderateScale(30),
+  /* ⭐ New App Title Style */
+  appTitle: {
+    fontSize: moderateScale(36),
     fontWeight: "900",
-    color: "#e5e7eb",
-    letterSpacing: 1,
+    letterSpacing: 1.5,
+    color: "#60a5fa",
+    marginBottom: 10,
+
+    // Glow effect
+    textShadowColor: "#3b82f6",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 12,
   },
 
   toolbar: {
