@@ -146,20 +146,5 @@ Browse starred and popular repositories inside the app.
 ✔ Language tags  
 ✔ Star count visibility  
 
----
-
-## 🛠 Tech Stack
-
-- **React Native**
-- **Expo (Dev Client)**
-- **TypeScript**
-- **expo-router**
-- **expo-notifications**
-- **GitHub GraphQL API**
-- **LeetCode GraphQL API**
-- **react-native-svg**
-- **Linear Gradients & Custom UI**
-
----
 
 ## 🧠 Future Features
