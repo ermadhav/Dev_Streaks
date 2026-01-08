@@ -148,3 +148,9 @@ Browse starred and popular repositories inside the app.
 
 
 ## 🧠 Future Features
+
+## 🧠 Roadmap
+
+Planned enhancements and experimental features are maintained privately to ensure originality and quality.
+
+Stay tuned for future updates and releases 🚀
