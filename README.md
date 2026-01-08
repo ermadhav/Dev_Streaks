@@ -49,14 +49,15 @@ Built with **Expo + React Native**, designed for **developers who care about con
 ## 📱 Screenshots
 
 <p align="center">
-<img src="screenshots/signup.png" width="220" />
-  <img src="screenshots/login.png" width="220" />
-  <img src="screenshots/home.png" width="220" />
-  <img src="screenshots/share.png" width="220" />
-  <img src="screenshots/stats.png" width="220" />
-  <img src="screenshots/setting.png" width="220" />
-  <img src="screenshots/repos.png" width="220" />
-  <img src="screenshots/profile.png" width="220" />
+<img src="screenshots/signup.jpg" width="220" />
+  <img src="screenshots/login.jpg" width="220" />
+  <img src="screenshots/home.jpg" width="220" />
+  <img src="screenshots/share.jpg" width="220" />
+  <img src="screenshots/stat1.jpg" width="220" />
+  <img src="screenshots/stat1.jpg" width="220" />
+  <img src="screenshots/setting.jpg" width="220" />
+  <img src="screenshots/repo1.jpg" width="220" />
+  <img src="screenshots/repo2.jpg" width="220" />
 </p>
 
 > 📌 Replace image names with your actual screenshot file names.
