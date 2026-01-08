@@ -147,7 +147,7 @@ Browse starred and popular repositories inside the app.
 ✔ Star count visibility  
 
 
-## 🧠 Future Features
+<!-- ## 🧠 Future Features -->
 
 ## 🧠 Roadmap
 
