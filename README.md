@@ -3,8 +3,6 @@
 Track your **GitHub commits** and **LeetCode problem-solving streaks** in one beautiful mobile app.  
 Built with **Expo + React Native**, designed for **developers who care about consistency**.
 
-> _“Consistency beats intensity.”_
-
 ---
 
 ## ✨ Features
@@ -47,10 +45,10 @@ Built with **Expo + React Native**, designed for **developers who care about con
 ---
 
 ## 📱 Screenshots & Feature Walkthrough
-
+<!-- 
 Each screen below highlights a core feature of the Dev Streaks Tracker app.
 
----
+--- -->
 
 ### 📝 1. Create Account
 Create your account by entering email, password, GitHub username, and LeetCode username.
