@@ -1,4 +1,3 @@
-```md
 # 🔥 Dev Streaks Tracker
 
 Track your **GitHub commits** and **LeetCode problem-solving streaks** in one beautiful mobile app.  
@@ -49,8 +48,18 @@ Built with **Expo + React Native**, designed for **developers who care about con
 
 ## 📱 Screenshots
 
+<p align="center">
+<img src="screenshots/signup.png" width="220" />
+  <img src="screenshots/login.png" width="220" />
+  <img src="screenshots/home.png" width="220" />
+  <img src="screenshots/share.png" width="220" />
+  <img src="screenshots/stats.png" width="220" />
+  <img src="screenshots/setting.png" width="220" />
+  <img src="screenshots/repos.png" width="220" />
+  <img src="screenshots/profile.png" width="220" />
+</p>
 
-```
+> 📌 Replace image names with your actual screenshot file names.
 
 ---
 
@@ -68,112 +77,3 @@ Built with **Expo + React Native**, designed for **developers who care about con
 
 ---
 
-## 🧠 Architecture
-
-```txt
-app/
- ├── index.tsx            # Home screen
- ├── stats.tsx            # Stats dashboard
- ├── profile-share.tsx    # QR & sharing screen
- ├── repos.tsx            # Starred / popular repos
- ├── settings.tsx
-
-hooks/
- ├── useGithubStreak.ts
- ├── useLeetCodeStreak.ts
- ├── useUsernames.ts
-
-components/
- ├── Heatmap.tsx
- ├── StreakCard.tsx
- ├── StatCard.tsx
-
-utils/
- ├── notifications.ts
- ├── scheduleNotifications.ts
- ├── stats.ts
- ├── healthScore.ts
-````
-
----
-
-## 🚀 Getting Started
-
-### 1️⃣ Clone the repo
-
-```bash
-git clone https://github.com/ermadhav/L-G-tracker
-cd L-G-tracker
-```
-
-### 2️⃣ Install dependencies
-
-```bash
-npm install
-```
-
-### 3️⃣ Environment variables
-
-Create a `.env` file:
-
-```env
-EXPO_PUBLIC_GITHUB_TOKEN=your_github_token
-EXPO_PUBLIC_LEETCODE_USERNAME=your_leetcode_username
-```
-
-### 4️⃣ Run on real device (required for notifications)
-
-```bash
-npx expo run:android
-```
-
-> ⚠️ Notifications **do not work in Expo Go**
-> Use **Expo Dev Client** or a real device.
-
----
-
-## 🔔 Notification Logic
-
-| Platform | Timezone | Reminder Times         |
-| -------- | -------- | ---------------------- |
-| GitHub   | Local    | 5h & 1h before day end |
-| LeetCode | IST      | 5h & 1h before 5:30 AM |
-
-✔ Auto-cancelled if streak already completed
-✔ Prevents duplicate notifications on reload
-
----
-
-## 🌟 Why This App Stands Out
-
-* Not just streaks → **behavior-driven insights**
-* Time-zone-aware reminders
-* GitHub + LeetCode in **one unified UX**
-* Built with **scalable architecture**
-* Resume-worthy real-world project
-
----
-
-## 🧑‍💻 Author
-
-**Cosmo Coder**
-Engineering Student & Mobile App Developer
-
-> Built with ❤️ to stay consistent every single day.
-
----
-
-## 📄 License
-
-MIT License — feel free to fork, improve, and build on it.
-
----
-
-## ⭐ Support
-
-If you like this project:
-
-* ⭐ Star the repo
-* 🍴 Fork it
-* 🐛 Report issues
-* 💡 Suggest features
