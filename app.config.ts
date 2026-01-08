@@ -7,10 +7,12 @@ export default {
     scheme: "streaktracker",
     userInterfaceStyle: "automatic",
 
+    // App Icon
     icon: "./assets/images/icon.png",
 
+    // Splash Screen
     splash: {
-      image: "./assets/images/splash-icon.png",
+      image: "./assets/images/icon.png",
       resizeMode: "contain",
       backgroundColor: "#020617",
     },
@@ -18,9 +20,10 @@ export default {
     android: {
       package: "com.cosmocoder.devstreaks",
 
+      // Adaptive Icon
       adaptiveIcon: {
-        foregroundImage: "./assets/images/android-icon-foreground.png",
-        backgroundImage: "./assets/images/android-icon-background.png",
+        foregroundImage: "./assets/images/icon.png",
+        backgroundColor: "#020617",
       },
     },
 
@@ -33,6 +36,5 @@ export default {
         projectId: "1fb30904-c2b7-4df7-9ca4-9f5cfe77f60a",
       },
     },
-
   },
 };
