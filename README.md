@@ -3,7 +3,7 @@
 Track your **GitHub commits** and **LeetCode problem-solving streaks** in one beautiful mobile app.  
 Built with **Expo + React Native**, designed for **developers who care about consistency**.
 
----
+##
 
 ## ✨ Features
 
