@@ -164,28 +164,6 @@ Browse starred and popular repositories inside the app.
 
 ---
 
-## 🧠 Architecture
+## 🧠 Future Features
 
 ```txt
-app/
- ├── index.tsx            # Home screen
- ├── stats.tsx            # Stats dashboard
- ├── profile-share.tsx    # QR & sharing screen
- ├── repos.tsx            # Starred / popular repos
- ├── settings.tsx
-
-hooks/
- ├── useGithubStreak.ts
- ├── useLeetCodeStreak.ts
- ├── useUsernames.ts
-
-components/
- ├── Heatmap.tsx
- ├── StreakCard.tsx
- ├── StatCard.tsx
-
-utils/
- ├── notifications.ts
- ├── scheduleNotifications.ts
- ├── stats.ts
- ├── healthScore.ts
