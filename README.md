@@ -38,12 +38,6 @@ Built with **Expo + React Native**, designed for **developers who care about con
 - One-tap profile links
 - Share your coding journey instantly
 
-### 🔔 Smart Notifications
-- ⏳ 5 hours before day ends
-- ⚠️ 1 hour before day ends
-- Auto-cancels if streak is already saved
-- Android-optimized notification channels
-
 ---
 
 ## 📱 Screenshots
@@ -59,9 +53,6 @@ Built with **Expo + React Native**, designed for **developers who care about con
   <img src="screenshots/repo1.jpg" width="220" />
   <img src="screenshots/repo2.jpg" width="220" />
 </p>
-
-> 📌 Replace image names with your actual screenshot file names.
-
 ---
 
 ## 🛠 Tech Stack
