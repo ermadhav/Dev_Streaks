@@ -1,57 +1,66 @@
 // utils/leetcodeStreak.ts
 
-const DAY = 86400;
+const SECONDS_IN_DAY = 86400;
 
-/* ---------------- LONGEST STREAK ---------------- */
+/**
+ * Convert timestamp (seconds) → UTC day number
+ */
+function toDay(ts: number) {
+  return Math.floor(ts / SECONDS_IN_DAY);
+}
 
+/**
+ * Longest streak is already mostly correct
+ */
 export function getLeetCodeLongestStreak(
   calendar: Record<string, number>
 ) {
   const days = Object.keys(calendar)
-    .map((ts) => Math.floor(Number(ts) / DAY))
+    .map(Number)
+    .map(toDay)
     .sort((a, b) => a - b);
 
-  if (days.length === 0) return 0;
+  let longest = 0;
+  let current = 0;
+  let prevDay: number | null = null;
 
-  let longest = 1;
-  let current = 1;
-
-  for (let i = 1; i < days.length; i++) {
-    if (days[i] === days[i - 1] + 1) {
-      current++;
-    } else {
+  for (const day of days) {
+    if (prevDay === null || day !== prevDay + 1) {
       current = 1;
+    } else {
+      current++;
     }
+
     longest = Math.max(longest, current);
+    prevDay = day;
   }
 
   return longest;
 }
 
-/* ---------------- CURRENT STREAK ---------------- */
-
+/**
+ * ✅ FIXED CURRENT STREAK
+ * - Ignores today
+ * - Starts from yesterday
+ * - Timezone safe
+ */
 export function getLeetCodeCurrentStreak(
   calendar: Record<string, number>
 ) {
-  if (!calendar || Object.keys(calendar).length === 0) return 0;
-
-  // Convert timestamps → unique day numbers
-  const solvedDays = new Set<number>(
-    Object.keys(calendar).map((ts) =>
-      Math.floor(Number(ts) / DAY)
-    )
+  const daySet = new Set(
+    Object.keys(calendar).map((ts) => toDay(Number(ts)))
   );
 
-  // Find the latest solved day
-  const latestDay = Math.max(...solvedDays);
+  // Today in UTC days
+  const todayDay = Math.floor(Date.now() / 1000 / SECONDS_IN_DAY);
 
+  // ✅ Start from yesterday (ignore today)
+  let checkDay = todayDay - 1;
   let streak = 0;
-  let cursor = latestDay;
 
-  // Walk backwards while days exist
-  while (solvedDays.has(cursor)) {
+  while (daySet.has(checkDay)) {
     streak++;
-    cursor--;
+    checkDay--;
   }
 
   return streak;

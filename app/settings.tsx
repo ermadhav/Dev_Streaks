@@ -90,7 +90,7 @@ export default function Settings() {
             <TextInput
               value={github}
               onChangeText={setGithub}
-              placeholder="e.g. octocat"
+              placeholder="e.g. ermadhav"
               placeholderTextColor="#6b7280"
               style={styles.input}
               autoCapitalize="none"
@@ -103,7 +103,7 @@ export default function Settings() {
             <TextInput
               value={leetcode}
               onChangeText={setLeetcode}
-              placeholder="e.g. cosmocoder"
+              placeholder="e.g. cosmocoders"
               placeholderTextColor="#6b7280"
               style={styles.input}
               autoCapitalize="none"
