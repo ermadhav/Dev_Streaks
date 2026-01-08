@@ -89,7 +89,13 @@ export default function Home() {
         <View style={[styles.content, isTablet && styles.tabletContent]}>
           {/* ===== HEADER ===== */}
           <View style={styles.header}>
-            <Text style={styles.title}>Dev Streaks</Text>
+            {/* ⭐ Badge Style Title */}
+            <View style={styles.titleRow}>
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>DEV</Text>
+              </View>
+              <Text style={styles.titleText}>Streaks</Text>
+            </View>
 
             <ScrollView
               horizontal
@@ -180,7 +186,6 @@ export default function Home() {
 
               {!leetcodeData.loading && (
                 <>
-                  {/* Row 1 */}
                   <View style={styles.statsRow}>
                     <StatChip
                       icon="🟢"
@@ -194,7 +199,6 @@ export default function Home() {
                     />
                   </View>
 
-                  {/* Row 2 */}
                   <View style={styles.statsRow}>
                     <StatChip
                       icon="🔴"
@@ -269,11 +273,33 @@ const styles = StyleSheet.create({
 
   header: { marginBottom: verticalScale(18) },
 
-  title: {
-    fontSize: moderateScale(30),
+  /* ⭐ Title Styles */
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+
+  badge: {
+    backgroundColor: "#2563eb",
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+    marginRight: 8,
+  },
+
+  badgeText: {
+    color: "#fff",
     fontWeight: "800",
+    letterSpacing: 1.2,
+    fontSize: 14,
+  },
+
+  titleText: {
+    fontSize: moderateScale(30),
+    fontWeight: "900",
     color: "#e5e7eb",
-    marginBottom: 8,
+    letterSpacing: 1,
   },
 
   toolbar: {
@@ -339,7 +365,7 @@ const styles = StyleSheet.create({
   },
 
   statChipHighlight: {
-    backgroundColor: "rgba(250,204,21,0.18)", // soft yellow
+    backgroundColor: "rgba(250,204,21,0.18)",
     borderColor: "rgba(250,204,21,0.5)",
   },
 
