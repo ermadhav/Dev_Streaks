@@ -165,5 +165,3 @@ Browse starred and popular repositories inside the app.
 ---
 
 ## 🧠 Future Features
-
-```txt
