@@ -35,7 +35,7 @@ function endOfYear(year: number) {
 function getSmartCurrentStreakFull(data: number[]) {
   if (!data.length) return 0;
 
-  // ✅ Find last day that actually has commits
+  //  Find last day that actually has commits
   let i = data.length - 1;
   while (i >= 0 && data[i] === 0) {
     i--;
@@ -45,7 +45,7 @@ function getSmartCurrentStreakFull(data: number[]) {
 
   let streak = 0;
 
-  // ✅ Count backwards until a zero appears
+  //  Count backwards until a zero appears
   for (; i >= 0; i--) {
     if (data[i] > 0) streak++;
     else break;
