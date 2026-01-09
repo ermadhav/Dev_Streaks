@@ -14,6 +14,7 @@ import { useRef } from "react";
 import { moderateScale, verticalScale } from "../utils/responsive";
 
 import { useUsernames } from "../hooks/useUsernames";
+import React from "react";
 
 export default function ProfileShare() {
   const { github, leetcode } = useUsernames();
