@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import { getCurrentStreak, getLongestStreak } from "../utils/stats";
+import { getLongestStreak } from "../utils/stats";
 
 const GITHUB_TOKEN = process.env.EXPO_PUBLIC_GITHUB_TOKEN ?? "";
-
-/* -------------------------------- TYPES -------------------------------- */
 
 type ContributionDay = {
   date: string;
@@ -20,19 +18,43 @@ type GithubCache = {
 };
 
 let githubCache: GithubCache | null = null;
-const CACHE_TTL = 1000 * 60 * 10; // 10 minutes
+const CACHE_TTL = 1000 * 60 * 10;
 
-/* ------------------------------ DATE HELPERS ----------------------------- */
+/* ---------------- DATE HELPERS ---------------- */
 
 function startOfYear(year: number) {
-  return new Date(`${year}-01-01T00:00:00Z`).toISOString();
+  return `${year}-01-01T00:00:00Z`;
 }
 
 function endOfYear(year: number) {
-  return new Date(`${year}-12-31T23:59:59Z`).toISOString();
+  return `${year}-12-31T23:59:59Z`;
 }
 
-/* --------------------------- MAIN HOOK ----------------------------------- */
+/* ---------------- SAFE CURRENT STREAK ---------------- */
+
+function getSmartCurrentStreakFull(data: number[]) {
+  if (!data.length) return 0;
+
+  // ✅ Find last day that actually has commits
+  let i = data.length - 1;
+  while (i >= 0 && data[i] === 0) {
+    i--;
+  }
+
+  if (i < 0) return 0;
+
+  let streak = 0;
+
+  // ✅ Count backwards until a zero appears
+  for (; i >= 0; i--) {
+    if (data[i] > 0) streak++;
+    else break;
+  }
+
+  return streak;
+}
+
+/* ---------------- MAIN HOOK ---------------- */
 
 export function useGithubStreak(username: string) {
   const cleanUsername = username.trim();
@@ -50,8 +72,7 @@ export function useGithubStreak(username: string) {
       return;
     }
 
-    /* ------------------------------ CACHE ------------------------------ */
-
+    /* ---------- CACHE ---------- */
     if (
       githubCache &&
       githubCache.username === cleanUsername &&
@@ -71,7 +92,7 @@ export function useGithubStreak(username: string) {
       return;
     }
 
-    /* ---------------------------- FETCHER ----------------------------- */
+    /* ---------- FETCH PER YEAR ---------- */
 
     async function fetchYear(year: number): Promise<ContributionDay[]> {
       const res = await fetch("https://api.github.com/graphql", {
@@ -106,19 +127,18 @@ export function useGithubStreak(username: string) {
       });
 
       const json = await res.json();
-
       if (json.errors?.length) {
         throw new Error(json.errors[0].message);
       }
 
       const weeks =
-        json?.data?.user?.contributionsCollection?.contributionCalendar?.weeks ||
-        [];
+        json?.data?.user?.contributionsCollection?.contributionCalendar
+          ?.weeks || [];
 
       return weeks.flatMap((w: any) => w.contributionDays);
     }
 
-    /* ----------------------------- MAIN ------------------------------- */
+    /* ---------- MAIN ---------- */
 
     async function fetchData() {
       try {
@@ -126,11 +146,10 @@ export function useGithubStreak(username: string) {
         setError(null);
 
         const CURRENT_YEAR = new Date().getFullYear();
-        const START_YEAR = 2023; // your GitHub says "Since 2023"
+        const START_YEAR = 2020; // safe for most users
 
         const allDays: ContributionDay[] = [];
 
-        // 🔥 Fetch multiple years
         for (let year = START_YEAR; year <= CURRENT_YEAR; year++) {
           const days = await fetchYear(year);
           allDays.push(...days);
@@ -140,22 +159,42 @@ export function useGithubStreak(username: string) {
           throw new Error("No contribution data found");
         }
 
-        // ✅ Sort strictly by date
-        const ordered = allDays.sort((a, b) =>
+        /* ---------- SORT DAYS ---------- */
+        const orderedDays = [...allDays].sort((a, b) =>
           a.date.localeCompare(b.date)
         );
 
-        // ✅ Heatmap (full history)
-        const heat = ordered.map((d) => d.contributionCount);
+        /* ---------- MAP DATE -> COUNT ---------- */
+        const map = new Map<string, number>();
+        orderedDays.forEach((d) => {
+          map.set(d.date, d.contributionCount);
+        });
 
-        // ✅ Total commits
-        const total = heat.reduce((a, b) => a + b, 0);
+        /* ---------- FULL HISTORY SERIES ---------- */
+        const fullSeries = orderedDays.map((d) => d.contributionCount);
 
-        // ✅ Streaks
-        const current = getCurrentStreak(heat);
-        const longest = getLongestStreak(heat);
+        /* ---------- TOTAL COMMITS ---------- */
+        const total = fullSeries.reduce((a, b) => a + b, 0);
 
-        // ✅ Cache
+        /* ---------- LONGEST STREAK ---------- */
+        const longest = getLongestStreak(fullSeries);
+
+        /* ---------- CURRENT STREAK (SAFE) ---------- */
+        const current = getSmartCurrentStreakFull(fullSeries);
+
+        /* ---------- BUILD LAST 90 DAYS HEATMAP ---------- */
+        const heat: number[] = [];
+        const today = new Date();
+        today.setUTCHours(0, 0, 0, 0);
+
+        for (let i = 89; i >= 0; i--) {
+          const d = new Date(today);
+          d.setUTCDate(today.getUTCDate() - i);
+          const key = d.toISOString().slice(0, 10);
+          heat.push(map.get(key) || 0);
+        }
+
+        /* ---------- CACHE ---------- */
         githubCache = {
           username: cleanUsername,
           currentStreak: current,

@@ -17,7 +17,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "../utils/firebase";
 
 /* ================= APP VERSION (YOU CONTROL THIS) ================= */
-const APP_VERSION = "2.0.0"; 
+const APP_VERSION = "2.5.0"; 
 
 export default function Settings() {
   const { github, leetcode, setGithub, setLeetcode, save, loaded } =
