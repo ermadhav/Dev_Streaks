@@ -3,6 +3,8 @@ import { getCurrentStreak, getLongestStreak } from "../utils/stats";
 
 const GITHUB_TOKEN = process.env.EXPO_PUBLIC_GITHUB_TOKEN ?? "";
 
+/* -------------------------------- TYPES -------------------------------- */
+
 type ContributionDay = {
   date: string;
   contributionCount: number;
@@ -20,6 +22,18 @@ type GithubCache = {
 let githubCache: GithubCache | null = null;
 const CACHE_TTL = 1000 * 60 * 10; // 10 minutes
 
+/* ------------------------------ DATE HELPERS ----------------------------- */
+
+function startOfYear(year: number) {
+  return new Date(`${year}-01-01T00:00:00Z`).toISOString();
+}
+
+function endOfYear(year: number) {
+  return new Date(`${year}-12-31T23:59:59Z`).toISOString();
+}
+
+/* --------------------------- MAIN HOOK ----------------------------------- */
+
 export function useGithubStreak(username: string) {
   const cleanUsername = username.trim();
 
@@ -36,7 +50,8 @@ export function useGithubStreak(username: string) {
       return;
     }
 
-    // ✅ Cache
+    /* ------------------------------ CACHE ------------------------------ */
+
     if (
       githubCache &&
       githubCache.username === cleanUsername &&
@@ -56,73 +71,91 @@ export function useGithubStreak(username: string) {
       return;
     }
 
-    async function fetchData() {
-      try {
-        setLoading(true);
-        setError(null);
+    /* ---------------------------- FETCHER ----------------------------- */
 
-        const res = await fetch("https://api.github.com/graphql", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${GITHUB_TOKEN}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            query: `
-              query ($username: String!) {
-                user(login: $username) {
-                  contributionsCollection {
-                    contributionCalendar {
-                      weeks {
-                        contributionDays {
-                          date
-                          contributionCount
-                        }
+    async function fetchYear(year: number): Promise<ContributionDay[]> {
+      const res = await fetch("https://api.github.com/graphql", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${GITHUB_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: `
+            query ($username: String!, $from: DateTime!, $to: DateTime!) {
+              user(login: $username) {
+                contributionsCollection(from: $from, to: $to) {
+                  contributionCalendar {
+                    weeks {
+                      contributionDays {
+                        date
+                        contributionCount
                       }
                     }
                   }
                 }
               }
-            `,
-            variables: { username: cleanUsername },
-          }),
-        });
+            }
+          `,
+          variables: {
+            username: cleanUsername,
+            from: startOfYear(year),
+            to: endOfYear(year),
+          },
+        }),
+      });
 
-        const json = await res.json();
+      const json = await res.json();
 
-        if (json.errors?.length) {
-          throw new Error(json.errors[0].message);
+      if (json.errors?.length) {
+        throw new Error(json.errors[0].message);
+      }
+
+      const weeks =
+        json?.data?.user?.contributionsCollection?.contributionCalendar?.weeks ||
+        [];
+
+      return weeks.flatMap((w: any) => w.contributionDays);
+    }
+
+    /* ----------------------------- MAIN ------------------------------- */
+
+    async function fetchData() {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const CURRENT_YEAR = new Date().getFullYear();
+        const START_YEAR = 2023; // your GitHub says "Since 2023"
+
+        const allDays: ContributionDay[] = [];
+
+        // 🔥 Fetch multiple years
+        for (let year = START_YEAR; year <= CURRENT_YEAR; year++) {
+          const days = await fetchYear(year);
+          allDays.push(...days);
         }
 
-        const weeks =
-          json?.data?.user?.contributionsCollection?.contributionCalendar
-            ?.weeks;
-
-        if (!weeks?.length) {
+        if (!allDays.length) {
           throw new Error("No contribution data found");
         }
 
-        // ---------- Flatten days ----------
-        const days: ContributionDay[] = weeks.flatMap(
-          (w: any) => w.contributionDays
-        );
-
-        // ---------- Sort strictly by date (IMPORTANT) ----------
-        const orderedDays = days.sort((a, b) =>
+        // ✅ Sort strictly by date
+        const ordered = allDays.sort((a, b) =>
           a.date.localeCompare(b.date)
         );
 
-        // ---------- Full heatmap (entire year) ----------
-        const heat = orderedDays.map((d) => d.contributionCount);
+        // ✅ Heatmap (full history)
+        const heat = ordered.map((d) => d.contributionCount);
 
-        // ---------- Total commits ----------
+        // ✅ Total commits
         const total = heat.reduce((a, b) => a + b, 0);
 
-        // ---------- Streaks ----------
+        // ✅ Streaks
         const current = getCurrentStreak(heat);
         const longest = getLongestStreak(heat);
 
-        // ---------- Cache ----------
+        // ✅ Cache
         githubCache = {
           username: cleanUsername,
           currentStreak: current,
