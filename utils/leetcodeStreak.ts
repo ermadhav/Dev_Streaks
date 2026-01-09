@@ -1,9 +1,8 @@
-// utils/leetcodeStreak.ts
 
 const SECONDS_IN_DAY = 86400;
 
 /**
- * Convert timestamp (seconds) → UTC day number
+ * Convert timestamp (seconds) 
  */
 function toDay(ts: number) {
   return Math.floor(ts / SECONDS_IN_DAY);
@@ -38,12 +37,7 @@ export function getLeetCodeLongestStreak(
   return longest;
 }
 
-/**
- * ✅ FIXED CURRENT STREAK
- * - Ignores today
- * - Starts from yesterday
- * - Timezone safe
- */
+
 export function getLeetCodeCurrentStreak(
   calendar: Record<string, number>
 ) {
@@ -54,7 +48,7 @@ export function getLeetCodeCurrentStreak(
   // Today in UTC days
   const todayDay = Math.floor(Date.now() / 1000 / SECONDS_IN_DAY);
 
-  // ✅ Start from yesterday (ignore today)
+  // Start from yesterday (ignore today)
   let checkDay = todayDay - 1;
   let streak = 0;
 
