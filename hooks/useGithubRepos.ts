@@ -16,7 +16,7 @@ type CacheEntry = {
   popular: Repo[];
 };
 
-const repoCache = new Map<string, CacheEntry>(); // ✅ MEMORY CACHE
+const repoCache = new Map<string, CacheEntry>(); // MEMORY CACHE
 
 export function useGithubRepos(username: string) {
   const [starred, setStarred] = useState<Repo[]>([]);
@@ -26,7 +26,7 @@ export function useGithubRepos(username: string) {
   useEffect(() => {
     if (!username) return;
 
-    // ✅ RETURN CACHED DATA IF AVAILABLE
+    //  RETURN CACHED DATA IF AVAILABLE
     const cached = repoCache.get(username);
     if (cached) {
       setStarred(cached.starred);
@@ -90,11 +90,11 @@ export function useGithubRepos(username: string) {
         const popularRepos: Repo[] =
           user.repositories.nodes.map(mapRepo);
 
-        // ✅ SAVE STATE
+        // SAVE STATE
         setStarred(starredRepos);
         setPopular(popularRepos);
 
-        // ✅ SAVE CACHE
+        // SAVE CACHE
         repoCache.set(username, {
           starred: starredRepos,
           popular: popularRepos,
