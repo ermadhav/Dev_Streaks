@@ -34,7 +34,7 @@ export function useUsernames() {
     return unsubAuth;
   }, []);
 
-  // ✅ Save changes to Firestore
+  // Save changes to Firestore
   const save = async () => {
     const user = auth.currentUser;
     if (!user) return;
