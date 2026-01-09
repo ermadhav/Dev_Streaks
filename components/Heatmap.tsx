@@ -38,7 +38,7 @@ export function Heatmap({
     return null;
   }
 
-  // 🔑 GitHub-style rule: hide month labels on small cells
+  //  GitHub-style rule: hide month labels on small cells
   const showMonthLabels = cellSize >= 14;
 
   const visibleData = data.slice(-columns * ROWS);
