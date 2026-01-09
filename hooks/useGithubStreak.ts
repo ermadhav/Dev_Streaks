@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import { getCurrentStreak, getLongestStreak } from "../utils/stats";
 
-/**
- * ENV REQUIRED:
- * EXPO_PUBLIC_GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
- */
-
 const GITHUB_TOKEN = process.env.EXPO_PUBLIC_GITHUB_TOKEN ?? "";
 
 type ContributionDay = {
@@ -107,44 +102,37 @@ export function useGithubStreak(username: string) {
           throw new Error("No contribution data found");
         }
 
+        // ---------- Flatten days ----------
         const days: ContributionDay[] = weeks.flatMap(
           (w: any) => w.contributionDays
         );
 
-        // ---------- Build date → commits map ----------
-        const map = new Map<string, number>();
-        days.forEach((d) => map.set(d.date, d.contributionCount));
+        // ---------- Sort strictly by date (IMPORTANT) ----------
+        const orderedDays = days.sort((a, b) =>
+          a.date.localeCompare(b.date)
+        );
+
+        // ---------- Full heatmap (entire year) ----------
+        const heat = orderedDays.map((d) => d.contributionCount);
 
         // ---------- Total commits ----------
-        const total = days.reduce((sum, d) => sum + d.contributionCount, 0);
+        const total = heat.reduce((a, b) => a + b, 0);
 
-        // ---------- Build last 90 days heatmap ----------
-        const heat: number[] = [];
-        const today = new Date();
-        today.setUTCHours(0, 0, 0, 0);
-
-        for (let i = 89; i >= 0; i--) {
-          const d = new Date(today);
-          d.setUTCDate(today.getUTCDate() - i);
-          const key = d.toISOString().slice(0, 10);
-          heat.push(map.get(key) || 0);
-        }
-
-        // ---------- Streaks from heatmap ----------
-        const streak = getCurrentStreak(heat);
+        // ---------- Streaks ----------
+        const current = getCurrentStreak(heat);
         const longest = getLongestStreak(heat);
 
         // ---------- Cache ----------
         githubCache = {
           username: cleanUsername,
-          currentStreak: streak,
+          currentStreak: current,
           longestStreak: longest,
           totalCommits: total,
           heatmap: heat,
           timestamp: Date.now(),
         };
 
-        setCurrentStreak(streak);
+        setCurrentStreak(current);
         setLongestStreak(longest);
         setTotalCommits(total);
         setHeatmap(heat);
