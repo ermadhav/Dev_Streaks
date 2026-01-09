@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { getCurrentStreak, getLongestStreak } from "../utils/stats";
 
 /**
  * ENV REQUIRED:
@@ -22,7 +23,7 @@ type GithubCache = {
 };
 
 let githubCache: GithubCache | null = null;
-const CACHE_TTL = 1000 * 60 * 10; // ✅ 10 minutes cache
+const CACHE_TTL = 1000 * 60 * 10; // 10 minutes
 
 export function useGithubStreak(username: string) {
   const cleanUsername = username.trim();
@@ -40,7 +41,7 @@ export function useGithubStreak(username: string) {
       return;
     }
 
-    // ✅ Use cache if valid
+    // ✅ Cache
     if (
       githubCache &&
       githubCache.username === cleanUsername &&
@@ -110,40 +111,14 @@ export function useGithubStreak(username: string) {
           (w: any) => w.contributionDays
         );
 
+        // ---------- Build date → commits map ----------
         const map = new Map<string, number>();
         days.forEach((d) => map.set(d.date, d.contributionCount));
 
+        // ---------- Total commits ----------
         const total = days.reduce((sum, d) => sum + d.contributionCount, 0);
 
-        // ✅ FIXED STREAK LOGIC
-        let streak = 0;
-        const cursor = new Date();
-        cursor.setUTCHours(0, 0, 0, 0);
-
-        const todayKey = cursor.toISOString().slice(0, 10);
-        if ((map.get(todayKey) || 0) === 0) {
-          cursor.setUTCDate(cursor.getUTCDate() - 1);
-        }
-
-        while (true) {
-          const key = cursor.toISOString().slice(0, 10);
-          if ((map.get(key) || 0) > 0) {
-            streak++;
-            cursor.setUTCDate(cursor.getUTCDate() - 1);
-          } else break;
-        }
-
-        let longest = 0;
-        let current = 0;
-        days.forEach((d) => {
-          if (d.contributionCount > 0) {
-            current++;
-            longest = Math.max(longest, current);
-          } else {
-            current = 0;
-          }
-        });
-
+        // ---------- Build last 90 days heatmap ----------
         const heat: number[] = [];
         const today = new Date();
         today.setUTCHours(0, 0, 0, 0);
@@ -155,7 +130,11 @@ export function useGithubStreak(username: string) {
           heat.push(map.get(key) || 0);
         }
 
-        // ✅ Save to cache
+        // ---------- Streaks from heatmap ----------
+        const streak = getCurrentStreak(heat);
+        const longest = getLongestStreak(heat);
+
+        // ---------- Cache ----------
         githubCache = {
           username: cleanUsername,
           currentStreak: streak,

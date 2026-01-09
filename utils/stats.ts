@@ -18,15 +18,15 @@ export function getMonthlySummary(data: number[]) {
   };
 }
 
-// ---------- STREAK LOGIC (CORRECT & SAFE) ----------
+// ---------- STREAK LOGIC ----------
 
 // 🏆 Longest streak ever
 export function getLongestStreak(data: number[]) {
   let longest = 0;
   let current = 0;
 
-  for (let i = 0; i < data.length; i++) {
-    if (data[i] > 0) {
+  for (const value of data) {
+    if (value > 0) {
       current++;
       longest = Math.max(longest, current);
     } else {
@@ -72,20 +72,4 @@ export function getLastActiveDay(data: number[]) {
     }
   }
   return "Never";
-}
-
-// ---------- STREAK HEALTH SCORE ----------
-
-export function getHealthScore(data: number[]) {
-  const last30 = data.slice(-30);
-  const activeDays = last30.filter((d) => d > 0).length;
-
-  const longest = getLongestStreak(data);
-  const current = getCurrentStreak(data);
-
-  const score =
-    (activeDays / 30) * 60 +
-    (current / Math.max(longest, 1)) * 40;
-
-  return Math.min(100, Math.round(score));
 }
