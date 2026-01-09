@@ -16,7 +16,7 @@ import { verticalScale } from "../utils/responsive";
 import { signOut } from "firebase/auth";
 import { auth } from "../utils/firebase";
 
-/* ================= APP VERSION (YOU CONTROL THIS) ================= */
+/* ================= APP VERSION  ================= */
 const APP_VERSION = "2.5.0"; 
 
 export default function Settings() {
