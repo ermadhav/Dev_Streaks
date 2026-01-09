@@ -1,5 +1,3 @@
-// utils/stats.ts
-
 // ---------- BASIC SUMMARIES ----------
 
 export function getWeeklySummary(data: number[]) {
@@ -20,7 +18,6 @@ export function getMonthlySummary(data: number[]) {
 
 // ---------- STREAK LOGIC ----------
 
-// 🏆 Longest streak ever
 export function getLongestStreak(data: number[]) {
   let longest = 0;
   let current = 0;
@@ -37,7 +34,7 @@ export function getLongestStreak(data: number[]) {
   return longest;
 }
 
-// 🔥 Current streak (up to today)
+//  Current streak (up to today)
 export function getCurrentStreak(data: number[]) {
   let streak = 0;
 
