@@ -17,7 +17,7 @@ type LeetCodeCache = {
 };
 
 let leetCodeCache: LeetCodeCache | null = null;
-const CACHE_TTL = 1000 * 60 * 10; // ✅ 10 minutes
+const CACHE_TTL = 1000 * 60 * 10; //  10 minutes
 
 export function useLeetCodeStreak(username: string) {
   const cleanUsername = username.trim();
@@ -40,7 +40,7 @@ export function useLeetCodeStreak(username: string) {
       return;
     }
 
-    // ✅ Use cache if valid
+    //  Use cache if valid
     if (
       leetCodeCache &&
       leetCodeCache.username === cleanUsername &&
@@ -135,7 +135,7 @@ export function useLeetCodeStreak(username: string) {
         /* ---------- CURRENT STREAK ---------- */
         let streak = 0;
 
-        // ✅ Start from yesterday (avoid showing 0 during the day)
+        //  Start from yesterday (avoid showing 0 during the day)
         let dayCursor =
           Math.floor(Date.now() / 1000 / 86400) - 1;
 
@@ -169,7 +169,7 @@ export function useLeetCodeStreak(username: string) {
 
         setHeatmap(heat);
 
-        // ✅ Save to cache
+        //  Save to cache
         leetCodeCache = {
           username: cleanUsername,
           currentStreak: streak,
