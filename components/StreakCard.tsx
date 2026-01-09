@@ -2,7 +2,7 @@ import { View, Text, StyleSheet } from "react-native";
 import React from "react";
 
 type Props = {
-  title: string; // "GitHub · username"
+  title: string; // "GitHub username"
   streak: number;
   loading: boolean;
 };
