@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const GITHUB_TOKEN = process.env.EXPO_PUBLIC_GITHUB_TOKEN!;
+const GITHUB_TOKEN = process.env.EXPO_PUBLIC_GITHUB_TOKEN ?? "";
 
 type Repo = {
   id: string;
@@ -11,28 +11,25 @@ type Repo = {
   url: string;
 };
 
-type CacheEntry = {
-  starred: Repo[];
-  popular: Repo[];
-};
+const repoCache = new Map<string, { starred: Repo[]; popular: Repo[] }>();
 
-const repoCache = new Map<string, CacheEntry>(); // MEMORY CACHE
-
-export function useGithubRepos(username: string) {
+export function useGithubRepos(username: string, enabled = true) {
+  const cleanUsername = username.trim();
   const [starred, setStarred] = useState<Repo[]>([]);
   const [popular, setPopular] = useState<Repo[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!username) return;
+    if (!enabled || !cleanUsername || !GITHUB_TOKEN) return;
 
-    //  RETURN CACHED DATA IF AVAILABLE
-    const cached = repoCache.get(username);
+    const cached = repoCache.get(cleanUsername);
     if (cached) {
       setStarred(cached.starred);
       setPopular(cached.popular);
       return;
     }
+
+    let cancelled = false;
 
     async function fetchRepos() {
       try {
@@ -50,12 +47,8 @@ export function useGithubRepos(username: string) {
                 user(login: $username) {
                   starredRepositories(first: 6) {
                     nodes {
-                      id
-                      name
-                      description
-                      stargazerCount
-                      primaryLanguage { name }
-                      url
+                      id name description stargazerCount
+                      primaryLanguage { name } url
                     }
                   }
                   repositories(
@@ -64,52 +57,43 @@ export function useGithubRepos(username: string) {
                     orderBy: { field: STARGAZERS, direction: DESC }
                   ) {
                     nodes {
-                      id
-                      name
-                      description
-                      stargazerCount
-                      primaryLanguage { name }
-                      url
+                      id name description stargazerCount
+                      primaryLanguage { name } url
                     }
                   }
                 }
               }
             `,
-            variables: { username },
+            variables: { username: cleanUsername },
           }),
         });
 
         const json = await res.json();
         const user = json?.data?.user;
+        if (!user) return;
 
-        if (!user) throw new Error("User not found");
+        const starredRepos = user.starredRepositories.nodes.map(mapRepo);
+        const popularRepos = user.repositories.nodes.map(mapRepo);
 
-        const starredRepos: Repo[] =
-          user.starredRepositories.nodes.map(mapRepo);
+        if (!cancelled) {
+          setStarred(starredRepos);
+          setPopular(popularRepos);
+        }
 
-        const popularRepos: Repo[] =
-          user.repositories.nodes.map(mapRepo);
-
-        // SAVE STATE
-        setStarred(starredRepos);
-        setPopular(popularRepos);
-
-        // SAVE CACHE
-        repoCache.set(username, {
+        repoCache.set(cleanUsername, {
           starred: starredRepos,
           popular: popularRepos,
         });
-      } catch (e) {
-        console.log("Repo fetch error:", e);
-        setStarred([]);
-        setPopular([]);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
 
     fetchRepos();
-  }, [username]);
+    return () => {
+      cancelled = true;
+    };
+  }, [cleanUsername, enabled]);
 
   return { starred, popular, loading };
 }
