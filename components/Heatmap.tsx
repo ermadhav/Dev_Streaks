@@ -38,7 +38,7 @@ export function Heatmap({
     return null;
   }
 
-  //  GitHub-style rule: hide month labels on small cells
+  // Hide month labels on very small cells
   const showMonthLabels = cellSize >= 14;
 
   const visibleData = data.slice(-columns * ROWS);
@@ -51,7 +51,7 @@ export function Heatmap({
     );
   }
 
-  /* ---------- BUILD MONTH LABELS (WEEK-BASED) ---------- */
+  /* ---------- BUILD MONTH LABELS ---------- */
   const labels: (string | null)[] = [];
   if (showMonthLabels) {
     const startDate = new Date();
@@ -77,7 +77,7 @@ export function Heatmap({
 
   return (
     <View>
-      {/* ---------- MONTH LABELS (DESKTOP / WIDE ONLY) ---------- */}
+      {/* ---------- MONTH LABELS ---------- */}
       {showMonthLabels && (
         <View
           style={{
@@ -109,10 +109,15 @@ export function Heatmap({
         </View>
       )}
 
-      {/* ---------- HEATMAP GRID ---------- */}
-      <View style={{ flexDirection: "row", gap: GAP }}>
+      {/* ---------- HEATMAP GRID (NO GAP) ---------- */}
+      <View style={{ flexDirection: "row" }}>
         {grid.map((col, colIndex) => (
-          <View key={colIndex} style={{ gap: GAP }}>
+          <View
+            key={colIndex}
+            style={{
+              marginRight: colIndex !== grid.length - 1 ? GAP : 0,
+            }}
+          >
             {col.map((value, rowIndex) => (
               <View
                 key={rowIndex}
@@ -123,6 +128,8 @@ export function Heatmap({
                   backgroundColor: getHeatColor(value),
                   borderWidth: 1,
                   borderColor: "rgba(255,255,255,0.08)",
+                  marginBottom:
+                    rowIndex !== col.length - 1 ? GAP : 0,
                 }}
               />
             ))}
@@ -135,7 +142,7 @@ export function Heatmap({
 
 /* ---------- COLOR SCALE ---------- */
 function getHeatColor(value: number) {
-  if (value <= 0) return "#374151";   // visible empty day
+  if (value <= 0) return "#374151";
   if (value < 3) return "#14532d";
   if (value < 6) return "#166534";
   if (value < 10) return "#22c55e";
